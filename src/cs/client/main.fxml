@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+   <bottom>
+      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="882.0" style="-fx-background-color: black;" text="Disconnected" textAlignment="CENTER" textFill="#e43104" BorderPane.alignment="BOTTOM_CENTER" />
+   </bottom>
+   <top>
+      <FlowPane alignment="CENTER" columnHalignment="CENTER" prefHeight="44.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Host:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <FlowPane.margin>
+                  <Insets right="5.0" />
+               </FlowPane.margin>
+            </Label>
+            <JFXTextField unFocusColor="#b5a4a4" />
+            <Label layoutX="218.0" layoutY="24.0" text="Port:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <FlowPane.margin>
+                  <Insets left="5.0" right="5.0" />
+               </FlowPane.margin>
+            </Label>
+            <JFXTextField layoutX="235.0" layoutY="20.0" unFocusColor="#b5a4a4" />
+            <JFXButton buttonType="RAISED" ripplerFill="#f20d93" style="-fx-background-color: #3FC380;" styleClass="custom-jfx-button-raised" text="Connect" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <FlowPane.margin>
+                  <Insets left="10.0" />
+               </FlowPane.margin>
+            </JFXButton>
+         </children>
+      </FlowPane>
+   </top>
+</BorderPane>
