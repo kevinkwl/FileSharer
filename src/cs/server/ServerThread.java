@@ -33,31 +33,27 @@ public class ServerThread extends Thread {
         try (InputStream is = connection.getInputStream();
             OutputStream os = connection.getOutputStream();
         ) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            DataInputStream input = new DataInputStream(is);
             DataOutputStream output = new DataOutputStream(os);
 
             int protocol;
             boolean listen = true;
             String line;
             while (listen) {
-                line = reader.readLine();
-                if (line.length() == 0) {
-                    continue;
-                }
-                protocol = Integer.parseInt(line);
+                protocol = input.read();
+                System.out.println("Protocol: " + protocol);
                 switch (protocol) {
                     case Protocol.ECHO:
-                        line = reader.readLine(); // read message
-                        Utils.writeln(output, Protocol.ECHO);
-                        Utils.writeln(output, line);
+                        line = input.readUTF(); // read message
+                        //output.write(Protocol.ECHO);
+                        output.writeUTF(line);
                         break;
                     case Protocol.CD:
-                        line = reader.readLine(); // read new directory name
+                        line = input.readUTF(); // read new directory name
                         changeDirectory(line);
-                        sendFileList(output);
                         break;
                     case Protocol.GET:
-                        line = reader.readLine(); // read filename
+                        line = input.readUTF(); // read filename
                         sendFile(output, line);
                         break;
                     case Protocol.LS:
@@ -67,6 +63,9 @@ public class ServerThread extends Thread {
                         // upload is not implemented.
                         break;
                     case Protocol.BYE:
+                        listen = false;
+                        break;
+                    case -1:
                         listen = false;
                         break;
                     default:
@@ -116,23 +115,25 @@ public class ServerThread extends Thread {
     }
 
     private void sendFile(DataOutputStream output, String filename) {
+        System.out.println("Get file " + filename);
         File file = new File(cwd, filename);
+        int found = 1;
         if (!file.exists()) {
             System.err.println("Client tries to get a non-existing file.");
-            return;
+            found = 0;
         }
         if (file.isDirectory()) {
             System.err.println("Client tries to get a directory.");
-            return;
+            found = 0;
         }
-
         long length = file.length(); // get file length in bytes
         try (FileInputStream fis = new FileInputStream(file.getPath())) {
-            // protocol header
-            Utils.writeln(output, Protocol.SEND);
-            // file meta: name, length
-            Utils.writeln(output, filename);
-            Utils.writeln(output, length);
+            output.write(found);             // tell the client the file is found or not.
+            if (found == 0) {
+                return;
+            }
+            // file meta: length
+            output.writeLong(length);
             output.flush();
 
             byte[] buffer = new byte[bufferSize];
@@ -152,20 +153,21 @@ public class ServerThread extends Thread {
     private void sendFileList(DataOutputStream output) {
         File[] files = listFiles();
         try {
-            Utils.writeln(output, files.length);
+            output.writeLong(files.length);
             for (File file : files) {
                 if (file.isDirectory()) {
-                    Utils.writeln(output, 0);       // 0 for directory, 1 for normal file
+                    output.write(1);
                 } else {
-                    Utils.writeln(output, 1);
+                    output.write(0);
                 }
-                Utils.writeln(output, file.getName());
+                output.writeUTF(file.getName());
             }
             output.flush();
         } catch (IOException e) {
             // damn
         }
     }
+
     private File[] listFiles() {
         return cwd.listFiles();
     }
