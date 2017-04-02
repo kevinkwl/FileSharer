@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="850.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="p2p.PeerController">
+    <bottom>
+        <Label fx:id="statusLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="882.0" style="-fx-background-color: black;" text="Disconnected" textAlignment="CENTER" textFill="#e43104" BorderPane.alignment="BOTTOM_CENTER" />
+    </bottom>
+    <top>
+        <FlowPane alignment="CENTER" columnHalignment="CENTER" prefHeight="44.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+            <children>
+            <Label fx:id="whoami" prefHeight="17.0" prefWidth="110.0" text="Label">
+               <FlowPane.margin>
+                  <Insets right="5.0" />
+               </FlowPane.margin>
+            </Label>
+            <JFXButton fx:id="peerNext1" buttonType="RAISED" onAction="#connectPeerNext1Action" style="-fx-background-color: #3FC380;" text="Peer" textAlignment="CENTER" textFill="WHITE">
+               <FlowPane.margin>
+                  <Insets right="10.0" />
+               </FlowPane.margin>
+            </JFXButton>
+            <JFXButton fx:id="peerNext2" buttonType="RAISED" onAction="#connectPeerNext2Action" style="-fx-background-color: #3FC380;" text="Peer" textFill="WHITE">
+               <FlowPane.margin>
+                  <Insets right="10.0" />
+               </FlowPane.margin>
+            </JFXButton>
+                <Label text="Host:">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                    <FlowPane.margin>
+                        <Insets right="5.0" />
+                    </FlowPane.margin>
+                </Label>
+                <JFXTextField fx:id="hostTextField" unFocusColor="#b5a4a4" />
+                <Label layoutX="218.0" layoutY="24.0" text="Port:">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                    <FlowPane.margin>
+                        <Insets left="5.0" right="5.0" />
+                    </FlowPane.margin>
+                </Label>
+                <JFXTextField fx:id="portTextField" layoutX="235.0" layoutY="20.0" unFocusColor="#b5a4a4" />
+                <JFXButton fx:id="connectButton" buttonType="RAISED" onAction="#connectAction" ripplerFill="#f20d93" style="-fx-background-color: #3FC380;" styleClass="custom-jfx-button-raised" text="Connect" textAlignment="CENTER" textFill="WHITE">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                    <FlowPane.margin>
+                        <Insets left="10.0" />
+                    </FlowPane.margin>
+                </JFXButton>
+            </children>
+        </FlowPane>
+    </top>
+    <center>
+        <FlowPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <children>
+                <FlowPane prefHeight="92.0" prefWidth="850.0">
+                    <children>
+                        <Label fx:id="pathLabel" alignment="CENTER" prefHeight="34.0" prefWidth="850.0" text="Label">
+                            <FlowPane.margin>
+                                <Insets top="10.0" />
+                            </FlowPane.margin>
+                        </Label>
+                        <FlowPane alignment="CENTER" columnHalignment="CENTER" prefHeight="49.0" prefWidth="850.0">
+                            <children>
+                                <JFXButton buttonType="RAISED" onAction="#upAction" prefWidth="100.0" style="-fx-background-color: #81CFE0;" text="UP">
+                                    <FlowPane.margin>
+                                        <Insets right="50.0" />
+                                    </FlowPane.margin>
+                                    <font>
+                                        <Font name="System Bold" size="14.0" />
+                                    </font>
+                                </JFXButton>
+                                <JFXButton buttonType="RAISED" onAction="#downloadAction" prefWidth="100.0" style="-fx-background-color: #DCC6E0;" text="Download">
+                                    <font>
+                                        <Font name="System Bold" size="14.0" />
+                                    </font>
+                                </JFXButton>
+                            </children>
+                        </FlowPane>
+                    </children>
+                </FlowPane>
+                <JFXListView fx:id="fileListView" onMouseClicked="#gotoFolderAction" prefHeight="400.0" prefWidth="700.0">
+                    <FlowPane.margin>
+                        <Insets left="75.0" right="75.0" top="30.0" />
+                    </FlowPane.margin>
+                </JFXListView>
+            </children>
+        </FlowPane>
+    </center>
+</BorderPane>

@@ -1,5 +1,7 @@
 package cs.server;
 
+import cs.Config;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -9,9 +11,9 @@ import java.net.ServerSocket;
  * Created by kevin on 01/04/2017.
  */
 public class FileServer {
-    private static int counter = 0;
+    protected int counter = 0;
 
-    private int portNumber;
+    protected int portNumber;
 
     public FileServer(int port) {
         this.portNumber = port;

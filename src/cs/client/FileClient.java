@@ -17,6 +17,11 @@ import java.util.List;
  */
 public class FileClient {
     private String host;
+    private String root = Config.CLIENT_ROOT;
+
+    public void setRoot(String root) {
+        this.root = root;
+    }
 
     public void setHost(String host) {
         this.host = host;
@@ -119,7 +124,7 @@ public class FileClient {
             long fileSize = input.readLong();
             long remaining = fileSize;
             int read = 0;
-            FileOutputStream fos = new FileOutputStream(Config.CLIENT_ROOT + "/" + filename);
+            FileOutputStream fos = new FileOutputStream(root + "/" + filename);
             while ((read = input.read(buffer, 0, (int)(Math.min(buffer.length, remaining)))) > 0) {
                 remaining -= read;
                 fos.write(buffer, 0, read);

@@ -12,7 +12,7 @@ import java.net.Socket;
  */
 
 public class ServerThread extends Thread {
-    private static final File root = new File(Config.SERVER_ROOT);
+    private File root = new File(Config.SERVER_ROOT);
     private static final int  bufferSize = 4096;
 
     private int depth;  // the depth of directory from the root directory, just for convenience.
@@ -26,6 +26,15 @@ public class ServerThread extends Thread {
         this.cwd = root;
         this.depth = 0;
         this.id = id;
+    }
+
+    public ServerThread(Socket socket, int id, String root) {
+        super("ServerThread");
+        this.connection = socket;
+        this.root = new File(root);
+        this.id = id;
+        this.depth = 0;
+        this.cwd = this.root;
     }
 
     public void run() {

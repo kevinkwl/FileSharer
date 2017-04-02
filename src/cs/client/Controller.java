@@ -25,32 +25,32 @@ public class Controller implements Initializable {
      * UI
      */
     @FXML
-    private Label pathLabel;
+    protected Label pathLabel;
 
-    private StringProperty path = new SimpleStringProperty();
-
-    @FXML
-    private TextField hostTextField;
+    protected StringProperty path = new SimpleStringProperty();
 
     @FXML
-    private TextField portTextField;
+    protected TextField hostTextField;
 
     @FXML
-    private Button connectButton;
+    protected TextField portTextField;
+
+    @FXML
+    protected Button connectButton;
 
 
     @FXML
-    private JFXListView fileListView;
+    protected JFXListView fileListView;
 
     @FXML
-    private Label statusLabel;
+    protected Label statusLabel;
 
-    private StringProperty status = new SimpleStringProperty();
+    protected StringProperty status = new SimpleStringProperty();
 
     /**
      * backend
      */
-    private FileClient fileClient = new FileClient("localhost", 2333);  // stub client
+    protected FileClient fileClient = new FileClient("localhost", 2333);  // stub client
 
 
     @Override
@@ -81,10 +81,14 @@ public class Controller implements Initializable {
         } else {
             statusLabel.setStyle("-fx-text-fill: red;-fx-background-color: black");
             status.setValue("Disconnected");
+            err("Cannot connect to " + hostTextField.getText() + ":" + portTextField.getText());
         }
     }
 
     private void changeDirectoryAction(String pathname) {
+        if (!fileClient.isConnected()) {
+            return;
+        }
         Platform.runLater(() -> {
             fileClient.changeDirectory(pathname);
             setFileList();
@@ -112,19 +116,28 @@ public class Controller implements Initializable {
 
     @FXML
     public void downloadAction() {
-        String file = (String)fileListView.getSelectionModel().getSelectedItem();
+        if (fileListView.getItems().isEmpty()) {
+            return;
+        }
+        String file = (String) fileListView.getSelectionModel().getSelectedItem();
         if (!file.endsWith("/")) {
             getFile(file);
         }
     }
 
     private void setFileList() {
+        if (!fileClient.isConnected()) {
+            return;
+        }
         Platform.runLater(() -> {
             fileListView.setItems(fileClient.getFiles());
         });
     }
 
-    private void getFile(String file) {
+    protected void getFile(String file) {
+        if (!fileClient.isConnected()) {
+            return;
+        }
         Platform.runLater(() -> {
             if (fileClient.downloadFile(file)) {
                 info("Download " + file + " successfully to " + Config.CLIENT_ROOT);
@@ -142,7 +155,7 @@ public class Controller implements Initializable {
         status.setValue(news);
     }
 
-    private void info(String news) {
+    protected void info(String news) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Info");
         alert.setHeaderText("Got something for you");
@@ -151,7 +164,7 @@ public class Controller implements Initializable {
         alert.showAndWait();
     }
 
-    private void err(String news) {
+    protected void err(String news) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText("Something's not right");
