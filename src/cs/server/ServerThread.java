@@ -22,6 +22,7 @@ public class ServerThread extends Thread {
 
     public ServerThread(Socket socket, int id) {
         super("ServerThread");
+        System.out.println(root.getAbsolutePath());
         this.connection = socket;
         this.cwd = root;
         this.depth = 0;

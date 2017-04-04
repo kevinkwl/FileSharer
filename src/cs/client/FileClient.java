@@ -131,6 +131,7 @@ public class FileClient {
             }
         } catch (IOException e) {
             System.err.println("Error in downloading file: " + filename);
+            return false;
         }
         return true;
     }

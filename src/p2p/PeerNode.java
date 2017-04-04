@@ -43,11 +43,18 @@ public class PeerNode {
     }
 
     public static void main(String args[]) {
-        Config.currentId = 2;
-        int peer = Config.currentId;
+        int peer;
+        String path;
+        if (args.length != 2) {
+            System.out.println("Usage1: java PeerNode <peerId:int> <peerFile_root:String>");
+            System.exit(-1);
+        }
+        peer = Integer.parseInt(args[0]);
 
+        Config.DEFAULT_ROOT = args[1];
 
-        Config.DEFAULT_ROOT += String.valueOf(peer);
+        Config.currentId = peer;
+
         PeerNode node = new PeerNode(Config.DEFAULT_PORT + peer);
         node.start();
     }
