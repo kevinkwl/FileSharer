@@ -1,0 +1,127 @@
+#+TITLE: Socket Programming - File Share
+#+AUTHOR: 凌康伟
+#+LATEX_CLASS: notes
+#+LATEX_HEADER: \usepackage{xeCJK}
+#+LATEX_COMPILER: xelatex
+
+* C/S model
+  Files are in =FileSharer/src/cs/=.
+** Functions
+   The implemented C/S file sharing application accomplish the following
+   functions:
+   + Server can listen to multiple client connection (Multithreading).
+   + Client can list files and directories on server side.
+   + Client can change current listing directory (into a inner folder or parent folder).
+   + Client can download all kinds of files (text, jpg, pdf ...).
+   + UTF8 filename support.
+** Usage
+   The runnable files are in =FileSharer/run= directory.
+   1. Run the server: at port 2680, root folder at =run/files/server=.
+      #+BEGIN_SRC shell
+      java -jar CSServer/FileSharer.jar 2680 files/server
+      #+END_SRC
+   2. Run the client: root folder at =run/files/client=.
+      #+BEGIN_SRC shell
+      java -jar CSClient/FileSharer.jar files/client
+      #+END_SRC
+   3. Use the GUI client application.
+
+      [[file:screenshots/GUI.png]]
+
+
+   GUI usage:
+   + Enter the hostname(or IP address) and port number at the top input fields,
+     click *connect* to connected to server. If successfully connected, the
+     bottom status will show a green connection status.
+   + Double click a file to download or select it, then click the download
+     button.
+
+     If the download is successful, a dialog will prompt.
+
+     [[file:screenshots/download.png]]
+   + Double click to enter a directory (directories are those end with =/=).
+   + Use *UP* button to go back to parent directory.
+   + To close the connection, just try to connect to another host, or close the application.
+** Java Classes
+   + Config :: Global settings: root folder for server, root folder for client,
+               server hostname, and port(2680).
+   + Protocol :: A simple communication protocol binding.
+   + server.FileServer :: An always-on server waiting for clients to connect and
+        download file. After accepting a client, the later communication is
+        handled by a new thread.
+   + server.ServerThread :: Communicate with a single client.
+   + client.FileClient :: The backend for client application, process socket
+        communication with server.
+   + client.Main :: Entry class for client application (JavaFX).
+   + client.Controller :: The controller for client application.
+   
+** Troubleshooting experiences
+   1. UTF8
+
+      I used =DataInputStream= and =DataOutputStream= to handle data passing
+      between server and client. Since they are byte stream, it works like a charm.
+
+   2. non-text file
+
+      Handle bytes instead of characters. Before transferring, the length of the
+      file(long) is sent. The server know exactly how many bytes to send and the
+      client know exactly how many bytes to receive and save to the
+      corresponding file.
+
+* P2P model
+  Files are in =FileSharer/src/p2p=.
+
+  The P2P model I implemented is a simple demo of how peers communicate with
+  each other without passing an always-on server. Each peer is implemented as a
+  pair of Server and Client.
+** Functions
+   + All functions of the C/S model.
+   + Each peer can directly connected to 2 neighboring peers.
+
+     Peer 0 can directly connect to 1 and 2, Peer 1 to 2 and 0, Peer 2 to 0
+     and 1. (3 peers).
+   + Each peer's server is at port 2680 + peerId.
+** Usage
+   A simple demo to start 3 peers.The runnable files are in =FileSharer/run=
+   directory.
+   1. Run peer 0: root folder at =run/files/p2p/peer-0
+      #+BEGIN_SRC shell
+      java -jar p2p/FileSharer.jar 0 files/p2p/peer-0
+      #+END_SRC
+   2. Run peer 1: root folder at =run/files/p2p/peer-1
+      #+BEGIN_SRC shell
+      java -jar p2p/FileSharer.jar 1 files/p2p/peer-1
+      #+END_SRC
+   3. Run peer 2: root folder at =run/files/p2p/peer-2
+      #+BEGIN_SRC shell
+      java -jar p2p/FileSharer.jar 2 files/p2p/peer-2
+      #+END_SRC
+
+   GUI usage:
+   + same as C/S client.
+   + Click the peer button to directly view files of that peer.
+
+   Screenshots for populating files locally to each peer to every peer.
+   1. peer 0 -> peer 1, peer 1 -> peer 2, peer 2 -> peer 0
+
+      [[file:screenshots/o1.png]]
+
+   2. peer 0 -> peer 2, peer 1 -> peer 0, peer 2 -> peer 1
+
+      [[file:screenshots/o2.png]]
+
+   3. peer 0 -> peer 1, peer 1 -> peer 2, peer 2 -> peer 0
+
+      [[file:screenshots/o3.png]]
+
+
+
+** Java Classes
+   + Config :: Configurations.
+   + PeerController :: Peer client controller, inherits from *Controller* class
+                       in C/S model, with some UI updated.
+   + PeerMain :: Peer client application entry point.
+   + PeerServer :: Inherits from *FileServer* class in C/S model, overrides the
+                   =start= method.
+   + PeerNode :: The main class for a peer. Responsible for starting the server
+                 in a separate thread and then start the client application.
